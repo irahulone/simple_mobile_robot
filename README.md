@@ -4,7 +4,7 @@ This workspace targets ROS 2 Jazzy and demonstrates how joystick input flows all
 
 - `teleop_core` – joystick to velocity commands ([see README](src/teleop_core/README.md)).
 - `kinematic_core` – body velocities to wheel speeds ([see README](src/kinematic_core/README.md)).
-- `roboteq_core` – wheel speeds to Roboteq serial commands ([see README](src/roboteq_core/README.md)).
+- `roboteq_core` – wheel speeds to Roboteq serial commands & battery monitoring ([see README](src/roboteq_core/README.md)).
 - `robot_launch` – launch files that start the whole stack ([see README](src/robot_launch/README.md)).
 
 If you are new to ROS 2, start by skimming the package READMEs in order; they explain what each node does and how the messages flow between them.
@@ -46,7 +46,9 @@ If you are new to ROS 2, start by skimming the package READMEs in order; they ex
 ### roboteq_core
 - Executable: `roboteq_node`
 - Subscribes to: `/r1/wheel_vel`
+- Publishes: `/r1/battery_state`
 - Streams wheel commands over serial to a Roboteq controller.
+- Monitors battery voltage at 1 Hz and publishes `sensor_msgs/msg/BatteryState`.
 
 ## Development Notes
 
