@@ -1,22 +1,50 @@
 # robot_launch
 
 ## Overview
-`robot_launch` collects the nodes provided by the other packages into convenient launch files. It is the easiest entry point for beginners to bring the full stack online.
+`robot_launch` provides a modular launch system for the robot. A single base launch file (`bringup.launch.py`) exposes per-node toggle flags, and preset launch files (`sim.launch.py`, `actual.launch.py`) offer convenient one-command startup for common configurations.
 
-## Launch File: `robot_launch.launch.py`
-Implementation: [`robot_launch/launch/robot_launch.launch.py`](launch/robot_launch.launch.py)
+All nodes are placed under a `/{robot_id}/` namespace so that multiple robots can coexist on the same ROS 2 network.
 
-This launch description instantiates three ROS 2 nodes:
-1. `teleop_core/teleop_node` – reads the joystick and publishes `/r1/cmd_vel` and `/r1/enable`.
-2. `kinematic_core/kinematic_node` – converts body velocities to wheel speeds.
-3. `roboteq_core/roboteq_node` – streams the wheel speeds to the Roboteq controller via serial.
+## Launch Files
 
-Beginners can open the launch file to see how ROS 2 launch actions are composed. The `Node(...)` entries show how to specify `package`, `executable`, and optional console output settings.
+### `bringup.launch.py` (base)
+Toggle each node individually via launch arguments:
 
-## Usage
-After building the workspace:
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `robot_id` | `r1` | Namespace and config file selection |
+| `use_joy` | `false` | Launch `virtual_joy` node |
+| `use_teleop` | `true` | Launch `teleop_node` |
+| `use_kinematic` | `true` | Launch `kinematic_node` |
+| `use_sim` | `false` | Launch `sim_robot_node` |
+| `use_actual` | `false` | Launch `roboteq_node` |
+| `use_rviz` | `false` | Launch RViz2 |
+| `use_description` | `false` | Launch `robot_state_publisher` + static TF |
+
 ```bash
-source install/setup.bash
-ros2 launch robot_launch robot_launch.launch.py
+ros2 launch robot_launch bringup.launch.py use_sim:=true use_rviz:=true use_description:=true
 ```
-This command starts all components in the correct order.
+
+### `sim.launch.py` (simulation preset)
+Starts the full simulation stack: virtual joystick, teleop, kinematics, sim_robot, URDF/TF, and RViz2.
+
+```bash
+ros2 launch robot_launch sim.launch.py
+```
+
+### `actual.launch.py` (hardware preset)
+Starts the real-robot stack: teleop, kinematics, and the Roboteq motor driver.
+
+```bash
+ros2 launch robot_launch actual.launch.py
+```
+
+### Running a different robot
+Pass the `robot_id` argument to use a different namespace and config file:
+
+```bash
+ros2 launch robot_launch sim.launch.py robot_id:=r2
+```
+
+## Config Files
+- `config/r1.yaml` — differential-drive k-gain parameters for robot `r1`.

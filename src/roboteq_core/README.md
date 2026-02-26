@@ -8,10 +8,10 @@ Implementation: [`roboteq_core/roboteq_core/roboteq_driver.py`](roboteq_core/rob
 
 Key behaviours:
 - Opens a serial port (default `/dev/ttyACM0` at 115200 baud) in `setup_serial`.
-- Subscribes to `/r1/wheel_vel` (`std_msgs/msg/Float32MultiArray`).
+- Subscribes to `wheel_vel` (`std_msgs/msg/Float32MultiArray`).
 - In `vel_callback`, extracts left/right speeds and forwards them to `move_motors`.
 - `move_motors` formats the commands expected by Roboteq controllers (`!G 1 <value>_`).
-- Publishes `sensor_msgs/msg/BatteryState` on `/r1/battery_state` at 1 Hz.
+- Publishes `sensor_msgs/msg/BatteryState` on `battery_state` at 1 Hz.
 - `read_battery_voltage` sends the `?V` query to the controller and parses the response (e.g. `V=135:246:4730`) to extract the battery voltage in volts.
 - `battery_monitoring_callback` is fired by a timer, reads the voltage via `read_battery_voltage`, and publishes a `BatteryState` message with thread-safe locking.
 

@@ -1,9 +1,6 @@
-import os
-from glob import glob
-
 from setuptools import find_packages, setup
 
-package_name = 'robot_launch'
+package_name = 'sim_robot'
 
 setup(
     name=package_name,
@@ -13,20 +10,17 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        (os.path.join('share', package_name, 'launch'),
-            glob(os.path.join('launch', '*launch.[pxy][yma]*'))),
-        (os.path.join('share', package_name, 'config'),
-            glob('config/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='neo',
     maintainer_email='neo.yuichiro@megachips.co.jp',
-    description='Launch files for the robot (hardware and simulation).',
+    description='Simulated differential-drive robot that integrates wheel velocities into 2-D pose.',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'sim_robot_node = sim_robot.sim_robot_node:main',
         ],
     },
 )

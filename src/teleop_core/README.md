@@ -7,8 +7,8 @@
 Implementation: [`teleop_core/teleop_core/run_joy.py`](teleop_core/run_joy.py)
 
 This node subscribes to `sensor_msgs/msg/Joy` messages, reads the configured axes, and publishes:
-- `geometry_msgs/msg/Twist` on `/r1/cmd_vel` for robot motion.
-- `std_msgs/msg/Bool` on `/r1/enable` to toggle the drive system.
+- `geometry_msgs/msg/Twist` on `cmd_vel` for robot motion.
+- `std_msgs/msg/Bool` on `enable` to toggle the drive system.
 
 Default mapping (you can edit the constants near the top of `run_joy.py`):
 - Left stick vertical (`axes[1]`) → forward / backward speed (`linear.x`).

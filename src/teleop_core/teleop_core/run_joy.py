@@ -24,8 +24,8 @@ class JoyNode(Node):
         self.rotational_axis_id = 0
         self.en_button_id = 4
         
-        self.publisher_cmd_vel = self.create_publisher(Twist, '/r1/cmd_vel', 5)
-        self.publisher_en = self.create_publisher(Bool, '/r1/enable', 1)
+        self.publisher_cmd_vel = self.create_publisher(Twist, 'cmd_vel', 5)
+        self.publisher_en = self.create_publisher(Bool, 'enable', 1)
     
     def joy_callback(self, msg):
         """Process a `Joy` message and update the robot command outputs."""

@@ -11,19 +11,23 @@ class KinematicDiffNode(Node):
 
     def __init__(self):
         super().__init__('movebase_kinematics_node')
-        self.k1 = 1.0
-        self.k2 = 1.0
-        self.k3 = 1.0
-        self.k4 = 1.0
+        self.declare_parameter('k1', 1.0)
+        self.declare_parameter('k2', 1.0)
+        self.declare_parameter('k3', 1.0)
+        self.declare_parameter('k4', 1.0)
+        self.k1 = self.get_parameter('k1').value
+        self.k2 = self.get_parameter('k2').value
+        self.k3 = self.get_parameter('k3').value
+        self.k4 = self.get_parameter('k4').value
 
         self.subscription = self.create_subscription(
             Twist,
-            '/r1/cmd_vel',
+            'cmd_vel',
             self.move_cmd_callback,
             5)
         self.subscription  # prevent unused variable warning
 
-        self.pub_velocity = self.create_publisher(Float32MultiArray, '/r1/wheel_vel', 5)
+        self.pub_velocity = self.create_publisher(Float32MultiArray, 'wheel_vel', 5)
 
     def move_cmd_callback(self, msg):
         """Translate a `Twist` command into wheel speeds and publish the result."""

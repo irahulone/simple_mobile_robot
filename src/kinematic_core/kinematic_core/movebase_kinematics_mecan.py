@@ -26,9 +26,9 @@ class MecanumKinematicsNode(Node):
         ], dtype=float)
 
         self.subscription = self.create_subscription(
-            Twist, "/r1/cmd_vel", self.cmd_vel_callback, 5
+            Twist, "cmd_vel", self.cmd_vel_callback, 5
         )
-        self.pub_wheels = self.create_publisher(Float32MultiArray, "/r1/wheel_vel", 5)
+        self.pub_wheels = self.create_publisher(Float32MultiArray, "wheel_vel", 5)
 
     def cmd_vel_callback(self, msg: Twist):
         vx = float(msg.linear.x)

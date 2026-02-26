@@ -1,0 +1,46 @@
+# Virtual Robot Arm Controller Configuration
+
+# Topic names
+topics:
+  joint_command: "/joint_cmd"
+  cartesian_command: "/cart_cmd"
+  joint_enable: "/joint_en"
+  cartesian_enable: "/cart_en"
+  robot_enable: "/enable"
+
+# Publishing frequency (Hz)
+frequency: 10
+
+# Safety settings
+safety:
+  disable_on_tab_switch: true  # Automatically disable robot when switching tabs
+
+# Joint mode settings
+joint:
+  num_joints: 6     # number of joints (1-12)
+  min_angle: -90    # degrees (GUI display)
+  max_angle: 90     # degrees (GUI display)
+  resolution: 0.1   # degrees (minimum step size)
+  angle_unit: "rad" # "deg" or "rad" - unit for publishing
+
+# Cartesian mode settings
+cartesian:
+  position:
+    min: -0.10      # meters
+    max: 0.10       # meters
+    resolution: 0.001  # meters (minimum step size)
+    unit: "m"       # "m" or "cm" - unit for publishing
+  orientation:
+    min: -30        # degrees (GUI display)
+    max: 30         # degrees (GUI display)
+    resolution: 0.1 # degrees (minimum step size)
+    unit: "rad"     # "deg" or "rad" - unit for publishing
+
+# Home position (Cartesian coordinates in meters and degrees)
+home_position:
+  x: 0.0      # meters
+  y: 0.0      # meters
+  z: 0.0      # meters
+  roll: 0.0   # degrees
+  pitch: 0.0  # degrees
+  yaw: 0.0    # degrees

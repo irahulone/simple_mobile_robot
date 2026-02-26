@@ -23,13 +23,13 @@ class RoboteqNode(Node):
     
         self.subscription = self.create_subscription(
             Float32MultiArray,
-            '/r1/wheel_vel',
+            'wheel_vel',
             self.vel_callback,
             5)
         self.subscription  # prevent unused variable warning
         self.battery_publisher = self.create_publisher(
             BatteryState,
-            f'/r1/battery_state',
+            'battery_state',
         5)
         # Battery monitoring timer
         self.battery_timer = self.create_timer(

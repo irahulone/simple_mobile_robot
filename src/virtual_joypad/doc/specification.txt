@@ -1,0 +1,12 @@
+・JointモードとCartesianモードを切り替える。
+・Jointモードは6軸のコントローラー、Cartesianは位置(x,y,z) と姿勢(roll,pitch,yaw)の6軸
+・JointはFloat64MultiArrayで、CartesianはTwist型で送信する。
+・Joint、Cartesianのどちらが有効かは、各々Bool型で、有効な場合にTrue。後述のDisableが働く場合はこちらはどちらもFalse.
+・周波数は10Hz
+・Jointは-90deg~90deg, Cartesianは位置は-10cm~10cm/姿勢は-30deg~30deg
+・各々の軸にリセットボタンを作成する。
+・制御エリアを作成し、ホームポジション、Enable/Disableボタンを作成する。
+・Enable/DisableはBool型で送信する。また、Disable時はJoint, Cartesianの送信は止める。
+・ホームポジションはCartesianで設定される。
+・これらはコンフィグで設定し、メッセージ名、周波数、角度や距離の制限、ホームポジションを設定できるようにする
+・GUIにはコンフィグの内容を表示する場所を作成すること。

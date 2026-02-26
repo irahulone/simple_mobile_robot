@@ -5,7 +5,10 @@ This workspace targets ROS 2 Jazzy and demonstrates how joystick input flows all
 - `teleop_core` – joystick to velocity commands ([see README](src/teleop_core/README.md)).
 - `kinematic_core` – body velocities to wheel speeds ([see README](src/kinematic_core/README.md)).
 - `roboteq_core` – wheel speeds to Roboteq serial commands & battery monitoring ([see README](src/roboteq_core/README.md)).
-- `robot_launch` – launch files that start the whole stack ([see README](src/robot_launch/README.md)).
+- `virtual_joypad` – PyQt6 GUI-based virtual controllers for development & testing ([see README](src/virtual_joypad/README.md)).
+- `robot_launch` – modular launch system with per-node toggles ([see README](src/robot_launch/README.md)).
+- `sim_robot` – simulated robot that integrates wheel velocities into 2-D pose ([see README](src/sim_robot/README.md)).
+- `robot_description` – URDF model, mesh, and RViz config for the rover ([see README](src/robot_description/README.md)).
 
 If you are new to ROS 2, start by skimming the package READMEs in order; they explain what each node does and how the messages flow between them.
 
@@ -19,16 +22,20 @@ If you are new to ROS 2, start by skimming the package READMEs in order; they ex
    ```
 2. In a new terminal, clone this repository and build the packages:
    ```bash
-   colcon build --packages-select teleop_core kinematic_core roboteq_core robot_launch
+   colcon build --packages-select teleop_core kinematic_core roboteq_core virtual_joypad robot_launch sim_robot robot_description
    ```
    Optionally add `--symlink-install` during development to mirror files into the install space without rebuilding after every code edit; you can omit it for production setups.
 3. After the build finishes, source the workspace so ROS 2 can find the new executables:
    ```bash
    source install/setup.bash
    ```
-4. Launch the complete stack. This starts joystick handling, kinematics, and the motor driver in one command:
+4. Launch the simulation (virtual joystick + RViz2 + all nodes):
    ```bash
-   ros2 launch robot_launch robot_launch.launch.py
+   ros2 launch robot_launch sim.launch.py
+   ```
+   Or launch the real-robot stack:
+   ```bash
+   ros2 launch robot_launch actual.launch.py
    ```
 
 ## Package Overview
@@ -36,19 +43,43 @@ If you are new to ROS 2, start by skimming the package READMEs in order; they ex
 ### teleop_core
 - Executable: `teleop_node`
 - Subscribes to: `joy`
-- Publishes: `/r1/cmd_vel`, `/r1/enable`
+- Publishes: `cmd_vel`, `enable`
 
 ### kinematic_core
 - Executable: `kinematic_node`
-- Subscribes to: `/r1/cmd_vel`
-- Publishes: `/r1/wheel_vel`
+- Subscribes to: `cmd_vel`
+- Publishes: `wheel_vel`
 
 ### roboteq_core
 - Executable: `roboteq_node`
-- Subscribes to: `/r1/wheel_vel`
-- Publishes: `/r1/battery_state`
+- Subscribes to: `wheel_vel`
+- Publishes: `battery_state`
 - Streams wheel commands over serial to a Roboteq controller.
 - Monitors battery voltage at 1 Hz and publishes `sensor_msgs/msg/BatteryState`.
+
+### virtual_joypad
+- Executables: `virtual_controller`, `virtual_joy`, `virtual_joy_slider`
+- Publishes: `joy`, `enable` (and others)
+- Provides a PyQt6 GUI-based virtual operation environment without requiring physical joystick hardware.
+
+### sim_robot
+- Executable: `sim_robot_node`
+- Subscribes to: `wheel_vel`
+- Publishes: `joint_states`
+- Applies inverse kinematics to recover v and omega from wheel velocities, integrates 2-D pose, and publishes joint states for `robot_state_publisher`.
+
+### robot_description
+- URDF/Xacro model with prismatic x, y and revolute theta joints
+- STL mesh for RViz2 visualisation
+- Launch files for `robot_state_publisher` and RViz2
+
+### robot_launch
+- Launch: `bringup.launch.py` (base), `sim.launch.py` (simulation), `actual.launch.py` (hardware)
+- Each node can be toggled on/off via launch arguments.
+- All nodes run under a `/{robot_id}/` namespace (default: `r1`).
+- Robot-specific parameters live in `config/{robot_id}.yaml`.
+
+**Note:** All topic names listed above are relative. At runtime they are prefixed with `/{robot_id}/` (e.g. `/r1/cmd_vel`) by the launch namespace.
 
 ## Development Notes
 
