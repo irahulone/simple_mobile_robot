@@ -1,8 +1,12 @@
-# Differential-drive gain parameters
-# Used by kinematic_core (forward) and sim_robot (inverse)
+# Gain parameters for kinematic_core (forward) and sim_robot (inverse)
 /**:
   ros__parameters:
+    # Differential-drive gains
     k1: 1.0   # translational gain, left wheel
     k2: 1.0   # rotational gain, left wheel
     k3: 1.0   # translational gain, right wheel
     k4: 1.0   # rotational gain, right wheel
+    # Omni/mecanum gains
+    k_vx: 1.0  # longitudinal velocity gain
+    k_vy: 1.0  # lateral velocity gain
+    k_wz: 1.0  # rotational velocity gain

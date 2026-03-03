@@ -16,6 +16,7 @@ Toggle each node individually via launch arguments:
 | `use_joy` | `false` | Launch `virtual_joy` node |
 | `use_teleop` | `true` | Launch `teleop_node` |
 | `use_kinematic` | `true` | Launch `kinematic_node` |
+| `kinematic_type` | `diff` | Kinematic model: `diff` or `omni` |
 | `use_sim` | `false` | Launch `sim_robot_node` |
 | `use_actual` | `false` | Launch `roboteq_node` |
 | `use_rviz` | `false` | Launch RViz2 |
@@ -46,5 +47,12 @@ Pass the `robot_id` argument to use a different namespace and config file:
 ros2 launch robot_launch sim.launch.py robot_id:=r2
 ```
 
+### Omni/mecanum kinematics
+Pass `kinematic_type:=omni` to use the omni/mecanum kinematic model instead of the default differential-drive model. The URDF mesh is also automatically switched to `omni_cad.stl`:
+
+```bash
+ros2 launch robot_launch sim.launch.py kinematic_type:=omni
+```
+
 ## Config Files
-- `config/r1.yaml` — differential-drive k-gain parameters for robot `r1`.
+- `config/r1.yaml` — differential-drive and omni/mecanum gain parameters for robot `r1`.

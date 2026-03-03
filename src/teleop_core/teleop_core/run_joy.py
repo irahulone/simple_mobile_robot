@@ -20,8 +20,9 @@ class JoyNode(Node):
             10)
         self.subscription  # prevent unused variable warning
         
-        self.translational_axis_id = 1
-        self.rotational_axis_id = 0
+        self.linear_x_axis_id = 1    # Left stick Y  → forward/backward
+        self.linear_y_axis_id = 0    # Left stick X  → strafe (omni)
+        self.angular_z_axis_id = 3   # Right stick X → rotation
         self.en_button_id = 4
         
         self.publisher_cmd_vel = self.create_publisher(Twist, 'cmd_vel', 5)
@@ -29,21 +30,16 @@ class JoyNode(Node):
     
     def joy_callback(self, msg):
         """Process a `Joy` message and update the robot command outputs."""
-        vel_translational = msg.axes[self.translational_axis_id]
-        vel_rotational = msg.axes[self.rotational_axis_id]
         vel_msg = Twist()
-
         en_state = Bool()
-        en_state.data = False
 
         if msg.buttons[self.en_button_id] == 1:
             en_state.data = True
-            vel_msg.linear.x = vel_translational
-            vel_msg.angular.z = vel_rotational
+            vel_msg.linear.x = msg.axes[self.linear_x_axis_id]
+            vel_msg.linear.y = msg.axes[self.linear_y_axis_id]
+            vel_msg.angular.z = msg.axes[self.angular_z_axis_id]
         else:
             en_state.data = False
-            vel_msg.linear.x = 0.0
-            vel_msg.angular.z = 0.0
 
         self.publisher_cmd_vel.publish(vel_msg)
         self.publisher_en.publish(en_state)

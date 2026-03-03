@@ -25,8 +25,20 @@ The gains k1–k4 are configurable via ROS 2 parameters (declared with `declare_
 | `k3` | double | 1.0 | Translational gain, right wheel |
 | `k4` | double | 1.0 | Rotational gain, right wheel |
 
+## Node: `omni_kinematic_node`
+Implementation: [`kinematic_core/kinematic_core/movebase_kinematics_omni.py`](kinematic_core/movebase_kinematics_omni.py)
+
+Converts body-frame `cmd_vel` (vx, vy, wz) into 4 mecanum/omni wheel commands via a mixing matrix. Subscribes to `cmd_vel` (`geometry_msgs/msg/Twist`) and publishes `wheel_vel` (`std_msgs/msg/Float32MultiArray`) with `[FL, FR, RL, RR]` wheel velocities.
+
+### Parameters
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `k_vx` | double | 1.0 | Longitudinal velocity gain |
+| `k_vy` | double | 1.0 | Lateral velocity gain |
+| `k_wz` | double | 1.0 | Rotational velocity gain |
+
 ## Launch / Usage
-Run with `ros2 run kinematic_core kinematic_node`, or rely on the `robot_launch` package to bring the whole chain up. In simulation, `robot_launch` loads the k gains automatically from the shared config.
+Run with `ros2 run kinematic_core kinematic_node` (diff) or `ros2 run kinematic_core omni_kinematic_node` (omni), or rely on the `robot_launch` package to bring the whole chain up. Pass `kinematic_type:=omni` to the launch file to select the omni model. In simulation, `robot_launch` loads the gains automatically from the shared config.
 
 ## Notes for Beginners
 - `vel_msg.data = [vel_left, vel_right]` shows how to pack multiple float values into a `Float32MultiArray`.

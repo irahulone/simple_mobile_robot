@@ -1,12 +1,17 @@
 # sim_robot
 
 ## Overview
-`sim_robot` simulates a differential-drive robot by receiving wheel velocities and integrating them into a 2-D pose. It replaces physical hardware so the robot can be visualised in RViz2.
+`sim_robot` simulates a mobile robot by receiving wheel velocities and integrating them into a 2-D pose. It replaces physical hardware so the robot can be visualised in RViz2. Both differential-drive (2-wheel) and omni/mecanum (4-wheel) configurations are supported.
 
 ## Node: `sim_robot_node`
 Implementation: [`sim_robot/sim_robot_node.py`](sim_robot/sim_robot_node.py)
 
-The node subscribes to `wheel_vel` (`std_msgs/msg/Float32MultiArray`, 2 elements: left, right) and applies inverse kinematics using the same k1–k4 gains as `kinematic_core` to recover translational velocity `v` and rotational velocity `ω`. It then integrates the pose (x, y, θ) with midpoint integration and publishes the result as `sensor_msgs/msg/JointState` on `joint_states`.
+The node subscribes to `wheel_vel` (`std_msgs/msg/Float32MultiArray`) and automatically detects the drive type from the array length:
+
+- **2 values `[left, right]`** — Differential-drive inverse kinematics using k1–k4 gains (same as `kinematic_core`).
+- **4 values `[FL, FR, RL, RR]`** — Omni/mecanum inverse kinematics via the pseudoinverse of the mixing matrix, recovering `vx`, `vy`, and `ω`.
+
+The recovered velocities are integrated (midpoint method with body→world rotation) into a 2-D pose (x, y, θ) and published as `sensor_msgs/msg/JointState` on `joint_states`.
 
 ### Parameters
 | Name | Type | Default | Description |

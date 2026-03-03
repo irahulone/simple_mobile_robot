@@ -46,9 +46,10 @@ If you are new to ROS 2, start by skimming the package READMEs in order; they ex
 - Publishes: `cmd_vel`, `enable`
 
 ### kinematic_core
-- Executable: `kinematic_node`
+- Executables: `kinematic_node` (diff), `omni_kinematic_node` (omni/mecanum)
 - Subscribes to: `cmd_vel`
 - Publishes: `wheel_vel`
+- Select model via `kinematic_type:=diff` (default) or `kinematic_type:=omni` at launch.
 
 ### roboteq_core
 - Executable: `roboteq_node`
@@ -70,7 +71,7 @@ If you are new to ROS 2, start by skimming the package READMEs in order; they ex
 
 ### robot_description
 - URDF/Xacro model with prismatic x, y and revolute theta joints
-- STL mesh for RViz2 visualisation
+- STL mesh for RViz2 visualisation (`rover_cad.stl` for diff, `omni_cad.stl` for omni — switched automatically via `kinematic_type`)
 - Launch files for `robot_state_publisher` and RViz2
 
 ### robot_launch

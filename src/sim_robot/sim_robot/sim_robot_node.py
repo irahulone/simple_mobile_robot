@@ -1,4 +1,6 @@
-"""Simulate a differential-drive robot by integrating wheel velocities into 2-D pose."""
+"""Simulate a mobile robot by integrating wheel velocities into 2-D pose.
+
+Supports both differential-drive (2-value) and omni/mecanum (4-value) input."""
 
 import math
 
@@ -9,7 +11,12 @@ from std_msgs.msg import Float32MultiArray
 
 
 class SimRobotNode(Node):
-    """Receive wheel velocities, apply inverse kinematics, and publish joint states."""
+    """Receive wheel velocities, apply inverse kinematics, and publish joint states.
+
+    Automatically detects drive type from the wheel_vel array length:
+    - 2 values [left, right]: differential-drive inverse kinematics
+    - 4 values [FL, FR, RL, RR]: omni/mecanum inverse kinematics
+    """
 
     def __init__(self):
         super().__init__('sim_robot_node')
@@ -41,16 +48,22 @@ class SimRobotNode(Node):
 
     def wheel_vel_callback(self, msg):
         """Inverse kinematics → midpoint integration → publish joint states."""
-        if len(msg.data) < 2:
+        if len(msg.data) >= 4:
+            # Omni/mecanum inverse: pseudoinverse of mixing matrix
+            fl, fr, rl, rr = msg.data[0], msg.data[1], msg.data[2], msg.data[3]
+            v = (fl + fr + rl + rr) / 4.0
+            vy = (-fl + fr + rl - rr) / 4.0
+            omega = (-fl + fr - rl + rr) / 4.0
+        elif len(msg.data) >= 2:
+            # Diff-drive inverse kinematics
+            vel_left = msg.data[0]
+            vel_right = msg.data[1]
+            det = self.k1 * self.k4 + self.k2 * self.k3
+            v = (self.k4 * vel_left + self.k2 * vel_right) / det
+            vy = 0.0
+            omega = (-self.k3 * vel_left + self.k1 * vel_right) / det
+        else:
             return
-
-        vel_left = msg.data[0]
-        vel_right = msg.data[1]
-
-        # Inverse kinematics: recover v and omega from wheel velocities
-        det = self.k1 * self.k4 + self.k2 * self.k3
-        v = (self.k4 * vel_left + self.k2 * vel_right) / det
-        omega = (-self.k3 * vel_left + self.k1 * vel_right) / det
 
         # Time step
         now = self.get_clock().now()
@@ -60,10 +73,10 @@ class SimRobotNode(Node):
         if dt <= 0.0 or dt > 1.0:
             return
 
-        # Midpoint integration
+        # Midpoint integration (body → world frame rotation)
         theta_mid = self.theta + 0.5 * omega * dt
-        self.x += v * math.cos(theta_mid) * dt
-        self.y += v * math.sin(theta_mid) * dt
+        self.x += (v * math.cos(theta_mid) - vy * math.sin(theta_mid)) * dt
+        self.y += (v * math.sin(theta_mid) + vy * math.cos(theta_mid)) * dt
         self.theta += omega * dt
 
         # Publish joint states for robot_state_publisher

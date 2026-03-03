@@ -10,6 +10,7 @@ from launch_ros.actions import Node
 
 def launch_setup(context, *args, **kwargs):
     robot_id = LaunchConfiguration('robot_id').perform(context)
+    mesh_file = LaunchConfiguration('mesh_file').perform(context)
 
     pkg_share = launch_ros.substitutions.FindPackageShare(
         package='robot_description'
@@ -27,6 +28,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_description': Command([
                     'xacro ', xacro_file,
                     ' r:=1.0 g:=0.0 b:=0.0 a:=1.0',
+                    f' mesh_file:={mesh_file}',
                 ]),
                 'use_sim_time': LaunchConfiguration('use_sim_time'),
                 'frame_prefix': f'{robot_id}/',
@@ -50,6 +52,10 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'use_sim_time', default_value='True',
             description='Flag to enable use_sim_time',
+        ),
+        DeclareLaunchArgument(
+            'mesh_file', default_value='rover_cad.stl',
+            description='STL mesh filename',
         ),
         OpaqueFunction(function=launch_setup),
     ])

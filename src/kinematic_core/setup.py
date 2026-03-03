@@ -21,7 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'kinematic_node = kinematic_core.movebase_kinematics_diff:main',
-            'mecanum_kinematics_node = kinematic_core.movebase_kinematics_mecan:main',
+            'omni_kinematic_node = kinematic_core.movebase_kinematics_omni:main',
         ],
     },
 )

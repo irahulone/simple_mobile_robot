@@ -11,10 +11,13 @@ class MecanumKinematicsNode(Node):
     def __init__(self):
         super().__init__("mecanum_kinematics_node")
 
-        # Tunable gains
-        self.k_vx = 1.0
-        self.k_vy = 1.0
-        self.k_wz = 1.0
+        # Tunable gains (configurable via ROS 2 parameters)
+        self.declare_parameter('k_vx', 1.0)
+        self.declare_parameter('k_vy', 1.0)
+        self.declare_parameter('k_wz', 1.0)
+        self.k_vx = self.get_parameter('k_vx').value
+        self.k_vy = self.get_parameter('k_vy').value
+        self.k_wz = self.get_parameter('k_wz').value
 
         # Mixing matrix for [FL, FR, RL, RR]^T = M * [vx, vy, wz]^T
         # Signs assume standard mecanum roller orientation.

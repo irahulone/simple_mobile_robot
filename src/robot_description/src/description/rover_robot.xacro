@@ -5,6 +5,7 @@
   <xacro:arg name="b" default="1.0"/>
   <xacro:arg name="a" default="1.0"/>
   <xacro:arg name="mesh_enabled" default="true"/>
+  <xacro:arg name="mesh_file" default="rover_cad.stl"/>
 
   <link name="world"/>
 
@@ -26,7 +27,7 @@
           <xacro:if value="$(arg mesh_enabled)">
             <origin xyz="0.0 0.0 0.0" rpy="1.57 0.0 -1.57"/>
             <geometry>
-              <mesh filename="package://robot_description/meshes/rover_cad.stl"
+              <mesh filename="package://robot_description/meshes/$(arg mesh_file)"
                     scale="0.001 0.001 0.001"/>
             </geometry>
             <material name="CustomColor">
