@@ -73,7 +73,7 @@ If you are new to ROS 2, start by skimming the package READMEs in order; they ex
 - URDF/Xacro model with prismatic x, y and revolute theta joints
 - STL mesh for RViz2 visualisation (`rover_cad.stl` for diff, `omni_cad.stl` for omni — switched automatically via `kinematic_type`)
 - Launch files for `robot_state_publisher` and RViz2
-- Rover cad file: https://drive.google.com/file/d/1vkdzxCL-kW0HRi8ohT-2cNw3WVHJROGb/view?usp=share_link
+- Rover cad file: [https://drive.google.com/file/d/1vkdzxCL-kW0HRi8ohT-2cNw3WVHJROGb/view?usp=share_link](https://drive.google.com/file/d/1JwXAaqpfH_gxMLBNqybkdQHMmjLf8t70/view?usp=share_link)
 
 ### robot_launch
 - Launch: `bringup.launch.py` (base), `sim.launch.py` (simulation), `actual.launch.py` (hardware)
